@@ -55,6 +55,9 @@ public class generator {
 		case 15:
 			equation += "} ";
 			break;
+		case 16:
+			equation += "1 / tan ( ";
+			break;
 		}
 		return equation;
 	}
@@ -211,8 +214,14 @@ public class generator {
 		System.out.println("Ten Equations will be made and tested with both Math.Eval() and the Calculator Program.");
 		for (int v = 0; v < 10; v++) {
 			String equation = " ";
+			String equationEval = " ";
 			String prevToken = "init";
 			
+			//try {
+			DoubleEvaluator evaluator = new DoubleEvaluator();
+			//} catch(Exception e) {
+				
+			//}
 			Stack<Integer> stack = new Stack<>();
 			
 			Random random = new Random();
@@ -256,14 +265,17 @@ public class generator {
 						}
 					}
 					equation += num + " ";
+					equationEval += num + " ";
 					prevToken = "num";
 			
 				} else if (arg[x] == 15) {
 					while (stack.isEmpty() == false) {
 					if (stack.peek() == 1) {
 						equation = builder(equation, 13);
+						equationEval = builder(equationEval, 13);
 					} else if (stack.peek() == 2) {
 						equation = builder(equation, 15);
+						equationEval = builder(equationEval, 15);
 					}
 					stack.pop();
 				}
@@ -272,15 +284,22 @@ public class generator {
 					if (stack.isEmpty() == false) {
 						if (stack.peek() == 1) {
 							equation = builder(equation, 13);
+							equationEval = builder(equationEval, 13);
 							stack.pop();
 						} else {
 							equation = builder(equation, 15);
+							equationEval = builder(equationEval, 15);
 							stack.pop();
 						}
 					}
 			
 				} else {
 					equation = builder(equation, arg[x]);
+					if (arg[x] == 9) {
+						equationEval = builder(equationEval, 16);
+					} else {
+						equationEval = builder(equationEval, arg[x]);
+					}
 					prevToken = setPrevious(arg[x]);
 					int y = stackBuild(arg[x]);
 				
@@ -293,6 +312,8 @@ public class generator {
 			}
 		System.out.println("Final Equation:" + equation);
 		String solCalc = Calculation.calculate(equation);
+		System.out.println("Answer:" + solCalc);
+		//System.out.println("Evaluator Result: " + eval.evaluate("1 + 4 "));
 		}
 		
 		System.out.println("Equations whose solutions matched:");
