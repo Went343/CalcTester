@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.lang.Math;
-import java.util.*;
 
 public class generator {
 	
@@ -206,28 +205,61 @@ public class generator {
 	
 	public static void main(String args[]) {
 		
-		String equation = " ";
-		String prevToken = "init";
+		int numMatched = 0;
+		int numDifferent = 0;
 		
-		Stack<Integer> stack = new Stack<>();
-		
-		Random random = new Random();
-		
-		
-		int[] arg = possibles(prevToken);
-		int x = random.nextInt(arg.length);
-		
-		while (arg[x] != 15) {
+		System.out.println("Ten Equations will be made and tested with both Math.Eval() and the Calculator Program.");
+		for (int v = 0; v < 10; v++) {
+			String equation = " ";
+			String prevToken = "init";
 			
-			arg = possibles(prevToken);
+			Stack<Integer> stack = new Stack<>();
 			
-			x = random.nextInt(arg.length);
-			if (arg[x] == 0) {
-				equation += "1 ";
-				System.out.println(equation);
-				prevToken = "num";
-			} else if (arg[x] == 15) {
-				while (stack.isEmpty() == false) {
+			Random random = new Random();
+			Random rando = new Random();
+			Random rand = new Random();
+			
+			int[] arg = possibles(prevToken);
+			int x = random.nextInt(arg.length);
+			
+			while (arg[x] != 15) {
+			
+				arg = possibles(prevToken);
+				x = random.nextInt(arg.length);
+			
+				if (arg[x] == 0) {
+				
+					String num = " ";
+				
+					int a = rand.nextInt(2);
+					if (a == 1) {
+						num += "-";
+					}
+				
+					int b = rand.nextInt(1, 3);
+					for (int c = 0; c < b; c++) {
+						num += String.valueOf(rando.nextInt(10));
+					}
+				
+					a = rand.nextInt(2);
+					Boolean hasDec = false;
+					if (a == 1) {
+						num += ".";
+						hasDec = true;
+					}
+				
+					b = rand.nextInt(1, 3);
+				
+					if (hasDec == true) {
+						for (int c = 0; c < b; c++) {
+							num += String.valueOf(rando.nextInt(10));
+						}
+					}
+					equation += num + " ";
+					prevToken = "num";
+			
+				} else if (arg[x] == 15) {
+					while (stack.isEmpty() == false) {
 					if (stack.peek() == 1) {
 						equation = builder(equation, 13);
 					} else if (stack.peek() == 2) {
@@ -235,31 +267,35 @@ public class generator {
 					}
 					stack.pop();
 				}
-			} else if (arg[x] == 13) {
-				if (stack.isEmpty() == false) {
-					if (stack.peek() == 1) {
-						equation = builder(equation, 13);
-						stack.pop();
-					} else {
-						equation = builder(equation, 15);
-						stack.pop();
+				
+				} else if (arg[x] == 13) {
+					if (stack.isEmpty() == false) {
+						if (stack.peek() == 1) {
+							equation = builder(equation, 13);
+							stack.pop();
+						} else {
+							equation = builder(equation, 15);
+							stack.pop();
+						}
+					}
+			
+				} else {
+					equation = builder(equation, arg[x]);
+					prevToken = setPrevious(arg[x]);
+					int y = stackBuild(arg[x]);
+				
+					if (y == 1) {
+						stack.push(1);
+					} else if (y == 2) {
+						stack.push(2);
 					}
 				}
-			} else {
-				equation = builder(equation, arg[x]);
-				prevToken = setPrevious(arg[x]);
-				int y = stackBuild(arg[x]);
-				if (y == 1) {
-					stack.push(1);
-				} else if (y == 2) {
-					stack.push(2);
-				}
-				System.out.println(equation);
 			}
-		}
 		System.out.println("Final Equation:" + equation);
-		String sol = Calculation.calculate(equation);
-		System.out.println(sol);
+		String solCalc = Calculation.calculate(equation);
+		}
+		
+		System.out.println("Equations whose solutions matched:");
 	}
 }
 
