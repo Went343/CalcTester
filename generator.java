@@ -1,4 +1,4 @@
-package generator;
+//package generator;
 
 import java.util.Random;
 import java.util.Stack;
@@ -122,7 +122,7 @@ public class generator {
 			result = init;
 			break;
 		case "num":
-			int[] num = { 1, 2, 3, 4, 5, 13, 13, 15};
+			int[] num = { 1, 2, 3, 4, 5, 13, 13, 13, 13, 13, 13, 13, 13, 15};
 			result = num;
 			break;
 		case "+":
@@ -154,7 +154,7 @@ public class generator {
 			result = openCurl;
 			break;
 		case "end":
-			int[] close = { 1, 2, 3, 4, 5, 13, 13, 15};
+			int[] close = { 1, 2, 3, 4, 5, 13, 13, 13, 13, 13, 13, 13, 13, 15};
 			result = close;
 			break;
 		case "sin":
@@ -208,20 +208,18 @@ public class generator {
 	
 	public static void main(String args[]) {
 		
-		int numMatched = 0;
-		int numDifferent = 0;
+		int numMatch = 0;
+		int numDif = 0;
 		
 		System.out.println("Ten Equations will be made and tested with both Math.Eval() and the Calculator Program.");
-		for (int v = 0; v < 10; v++) {
+		for (int v = 0; v < 10000000; v++) {
 			String equation = " ";
 			String equationEval = " ";
 			String prevToken = "init";
 			
-			//try {
+			
 			DoubleEvaluator evaluator = new DoubleEvaluator();
-			//} catch(Exception e) {
-				
-			//}
+			
 			Stack<Integer> stack = new Stack<>();
 			
 			Random random = new Random();
@@ -288,7 +286,7 @@ public class generator {
 							stack.pop();
 						} else {
 							equation = builder(equation, 15);
-							equationEval = builder(equationEval, 15);
+							equationEval = builder(equationEval, 13);
 							stack.pop();
 						}
 					}
@@ -297,6 +295,8 @@ public class generator {
 					equation = builder(equation, arg[x]);
 					if (arg[x] == 9) {
 						equationEval = builder(equationEval, 16);
+					} else if (arg[x] == 14) {
+						equationEval = builder(equationEval, 12);
 					} else {
 						equationEval = builder(equationEval, arg[x]);
 					}
@@ -310,13 +310,45 @@ public class generator {
 					}
 				}
 			}
-		System.out.println("Final Equation:" + equation);
+		//System.out.println("Final Equation:" + equation);
+
+		Double calc = 0.0;
+		Boolean calcWork = true;
+		Double eval = 0.0;
+		Boolean evalWork = true;
+
 		String solCalc = Calculation.calculate(equation);
-		System.out.println("Answer:" + solCalc);
-		//System.out.println("Evaluator Result: " + eval.evaluate("1 + 4 "));
+		
+
+		try {
+			calc = Double.valueOf(solCalc);
+		} catch (Exception e) {
+			calcWork = false;
+		}
+		//System.out.println("calc answer:" + calc);
+		try {
+			eval = evaluator.evaluate(equationEval);
+			//System.out.println("eval answer:" + eval);
+		} catch (Exception e) {
+			evalWork = false;
+		}
+
+		if (calcWork == true && evalWork == true) {
+			if (Double.compare(calc, eval) == 0) {
+				numMatch += 1;
+			} else {
+				numDif += 1;
+			}
+		} else if (calcWork == false && evalWork == false) {
+			numMatch += 1;
+		} else {
+			numDif += 1;
+		}
+
 		}
 		
-		System.out.println("Equations whose solutions matched:");
+		System.out.println("Equations whose solutions matched:" + numMatch);
+		System.out.println("Equations whose solutions didn't match:" + numDif);
 	}
 }
 
